@@ -52,7 +52,7 @@ The above one only executes for one epoch, which gives you the results at epoch 
 
 [Google Drive](https://drive.google.com/file/d/1RKdqJQ_u_UhK9KCiw8st3gsv6oFSVY9A/view?usp=drive_link)
 
-The real image dataset consists of 200 paired low-resolution
+The real image dataset consists of 142 paired low-resolution
 HSIs and trichromatic images. The trichromatic images were
 captured by a HUAWEI P30Pro RYYB camera and a HUAWEI
 P20 RGGB camera with the spatial resolution 5472×7296, and
