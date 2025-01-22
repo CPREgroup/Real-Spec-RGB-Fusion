@@ -60,6 +60,10 @@ the HSIs were captured by a compact scanning-based hyperspec-
 tral camera Specim IQ with spatial resolution 512×512 and
 204 bands ranging from 400 nm to 1000 nm. For more information, see paper IV.A) and D).
 
+# Contact
+
+Leave an issue here or contact with me JiabaoL6 [at] uci.edu, make sure your title contains the keyword [fusion] so I can filter them.
+
 # Cite us
 
 If you find this work helpful, please don't forget to cite us, thank you :)
