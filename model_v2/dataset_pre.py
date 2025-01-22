@@ -51,7 +51,7 @@ class Dataset_pre(Dataset):
 
 class Dataset_pre_realdata(Dataset_pre):
     def __init__(self, args):
-        # default setting is rgb is 3 times larger than hsi
+        # default setting is rgb size is 6 times larger than hsi, but the FOV (content) are the same, because they are aligned using optical flow method
         rgb_div_hsi = 6
         ksz = args.ker_sz
 
@@ -72,6 +72,11 @@ class Dataset_pre_realdata(Dataset_pre):
 
         # split to ? x ?
         # shape is h w c
+        '''
+        The key here is we crop the same content area from RGB and HSI images, whose size are smaller than the original image due to small GPU memory.
+        What you need to do is cropping the same area of the aligned image pair, in our case, in the aligned RGB-HSI image pair, the RGB is 6 (rgb_div_hsi) times bigger than HSI, the GPU memory cannot support for using the whole picture. In our paper, we used 768x768 for RGB and 128x128 for HSI.
+        The values in mask that are 0 is the occlusion area, we do not perform fusion on them. This is computed by performing forward and backward optical flow and find out the area that are not consistent.
+        '''
         hsiborder=128
         rgbborder=hsiborder*rgb_div_hsi
         h,w = list(map(int, args.hsi_slice_xy.split(',')))

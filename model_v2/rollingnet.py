@@ -55,7 +55,7 @@ class ConvFcn(torch.nn.Module):
         return y
 
 
-fcnway = True
+fcnway = True # now it is always true, we use neural representation for degradation parameters
 
 class Fullcnn(torch.nn.Module):
     def __init__(self, args):
@@ -63,13 +63,6 @@ class Fullcnn(torch.nn.Module):
         super(Fullcnn, self).__init__()
 
         petype = 'sin_cos'
-        global fcnway
-        if args.nerf in ['tensoronly', 'tensortv'] or 'tv' in args.nerf:
-            fcnway = False
-        elif args.nerf == 'sin':
-            pass
-        elif args.nerf == 'rbf':
-            petype = 'rbf'
 
 
 
@@ -90,12 +83,11 @@ class Fullcnn(torch.nn.Module):
         '''
         use implicit neural field
         '''
-        if fcnway:
-            self.input_1D = torch.from_numpy(positionencoding1D(31, 4)).float().to(device)
-            self.ssffcn = SSFFcn(4, 3)
+        self.input_1D = torch.from_numpy(positionencoding1D(31, 4)).float().to(device)
+        self.ssffcn = SSFFcn(4, 3)
 
-            self.input_2D = torch.from_numpy(positionencoding2D(self.args.ker_sz, self.args.ker_sz, 1, petype)).float().to(device).permute(2,0,1).unsqueeze(0)
-            self.convfcn = ConvFcn(1, 1)
+        self.input_2D = torch.from_numpy(positionencoding2D(self.args.ker_sz, self.args.ker_sz, 1, petype)).float().to(device).permute(2,0,1).unsqueeze(0)
+        self.convfcn = ConvFcn(1, 1)
 
 
     def forward(self, Iryb, Ispec, pos):

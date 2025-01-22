@@ -10,26 +10,24 @@ parser = ArgumentParser(description='FullCNN-Net')
 parser.add_argument('--flag',
                     # required=True,
                     default='fake_and_real_peppers_ms',
-                    help="flag of log, or dataset img name for not forget")
+                    help="flag for log, or dataset img name for reminder")
 parser.add_argument('--dataset', type=str, default="cave", help="datasetname")
 parser.add_argument('--mis', type=str, default="unixy", help="reminder")
-parser.add_argument('--nerf', type=str, default="sin", help="reminder")
 parser.add_argument('--gpuind', type=str, default="0", help="gpu for train")
 
 parser.add_argument('--start_epoch', type=int, default=0, help='epoch number of start training')
 parser.add_argument('--end_epoch', type=int, default=1200, help='epoch number of end training')
 parser.add_argument('--layer_num', type=int, default=6, help='phase number of ResCNN-Net')
 parser.add_argument('--learning_rate', type=float, default=1e-3, help='learning rate')
-parser.add_argument('--batchsize', type=int, default=1, help='batchsize')
 parser.add_argument('--rgb_wei', type=float, default=1, help='ryb loss weight')
 
 parser.add_argument('--model_dir', type=str, default='ablation/resblock', help='trained or pre-trained model directory')
 # parser.add_argument('--log_dir', type=str, default='ablation/resblock', help='log directory')
 parser.add_argument('--L', type=int, default=64, help='position encoding')
 parser.add_argument('--eta', type=float, default=1.0, help='weight')
-parser.add_argument('--ker_sz', type=int, default=8, help='kernel border')
-parser.add_argument('--imsz', type=int, default=512, help='rgb border')
-parser.add_argument('--hsi_slice_xy', type=str, default='0,0', help='rgb border')
+parser.add_argument('--ker_sz', type=int, default=8, help='kernel border size')
+parser.add_argument('--imsz', type=int, default=512, help='rgb border size')
+parser.add_argument('--hsi_slice_xy', type=str, default='0,0', help='check dataset_pre.py line 76-78 for explaination')
 
 args = parser.parse_args()
 log_dir = args.model_dir + '/trainlog'
@@ -74,7 +72,7 @@ if not os.path.exists(model_dir):
     os.makedirs(f'{model_dir}/results')
 
 dataset = Dataset_pre(args) if datasetfoo is not 'real' else Dataset_pre_realdata(args)
-train_loader = DataLoader(dataset, batch_size=args.batchsize, shuffle=True, pin_memory=True)
+train_loader = DataLoader(dataset, batch_size=1, shuffle=True, pin_memory=True)
 print(len(dataset))
 
 best_loss = 1e9
@@ -122,14 +120,14 @@ for epoch_i in range(start_epoch + 1, end_epoch + 1):
             tv_wei = 1.8
             lowrank_wei = 0.02
 
-        tv_loss = 1 * 5e-6 * tv_wei * torch.sum(torch.abs(phi[1:, :] - phi[:-1, :])) * args.batchsize
+        tv_loss = 1 * 5e-6 * tv_wei * torch.sum(torch.abs(phi[1:, :] - phi[:-1, :])) # phi is SSF
         U, S, Vh = torch.linalg.svd(kernel, full_matrices=True)
-        lr_loss = 1 * 1e-4 * lowrank_wei * torch.sum(S) * args.batchsize
+        lr_loss = 1 * 1e-4 * lowrank_wei * torch.sum(S)
         tv_img_loss_cnn = 5e-7 * torch.sum(torch.abs(resspec_cnn[:, 1:, :, :] - resspec_cnn[:, :-1, :, :]))
 
         # loss_all = ryb_loss_cnn / ryb_loss_cnn.detach() + spec_loss_cnn / spec_loss_cnn.detach()
         loss_all = ryb_loss_cnn + spec_loss_cnn
-        if 'tv' in args.nerf or datasetfoo == 'real':
+        if datasetfoo == 'real':
             loss_all = loss_all + tv_loss # + lr_loss
 
         # s6 = time.time()
