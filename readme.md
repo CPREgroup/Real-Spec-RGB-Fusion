@@ -56,8 +56,7 @@ The real image dataset consists of 142 paired low-resolution
 HSIs and trichromatic images. The trichromatic images were
 captured by a HUAWEI P30Pro RYYB camera and a HUAWEI
 P20 RGGB camera with the spatial resolution 5472×7296, and
-the HSIs were captured by a compact scanning-based hyperspec-
-tral camera Specim IQ with spatial resolution 512×512 and
+the HSIs were captured by a compact scanning-based hyperspectral camera Specim IQ with spatial resolution 512×512 and
 204 bands ranging from 400 nm to 1000 nm. For more information, see paper IV.A) and D).
 
 # Contact
